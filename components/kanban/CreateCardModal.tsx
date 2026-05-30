@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { createCard, updateCard, deleteCard } from "@/app/actions/cards";
 
 type Card = {
   id: string;
@@ -48,68 +49,55 @@ export default function CreateCardModal({
     setLoading(true);
     setError(null);
 
-    const supabase = createClient();
-
-    if (editCard) {
-      const { data, error } = await supabase
-        .from("cards")
-        .update({
-          title: title.trim(),
-          description: description || null,
+    try {
+      if (editCard) {
+        const card = await updateCard({
+          cardId: editCard.id,
+          title,
+          description,
           priority,
-          due_date: dueDate || null,
-        })
-        .eq("id", editCard.id)
-        .select("id, title, description, status, priority, due_date, position")
-        .single();
-
-      if (error) {
-        setError(error.message);
-        setLoading(false);
+          dueDate,
+        });
+        onSaved(card);
       } else {
-        onSaved(data);
-      }
-    } else {
-      const { data: maxRow } = await supabase
-        .from("cards")
-        .select("position")
-        .eq("board_id", boardId)
-        .eq("status", defaultStatus)
-        .order("position", { ascending: false })
-        .limit(1)
-        .single();
+        // Get next position via browser client (read-only, safe)
+        const supabase = createClient();
+        const { data: maxRow } = await supabase
+          .from("cards")
+          .select("position")
+          .eq("board_id", boardId)
+          .eq("status", defaultStatus)
+          .order("position", { ascending: false })
+          .limit(1)
+          .single();
 
-      const position = (maxRow?.position ?? -1) + 1;
-
-      const { data, error } = await supabase
-        .from("cards")
-        .insert({
-          board_id: boardId,
-          title: title.trim(),
-          description: description || null,
+        const card = await createCard({
+          boardId,
+          title,
+          description,
           status: defaultStatus,
           priority,
-          due_date: dueDate || null,
-          position,
-        })
-        .select("id, title, description, status, priority, due_date, position")
-        .single();
-
-      if (error) {
-        setError(error.message);
-        setLoading(false);
-      } else {
-        onSaved(data);
+          dueDate,
+          position: (maxRow?.position ?? -1) + 1,
+        });
+        onSaved(card);
       }
+    } catch {
+      setError("Failed to save card. Please try again.");
+      setLoading(false);
     }
   }
 
   async function handleDelete() {
     if (!editCard) return;
     setLoading(true);
-    const supabase = createClient();
-    await supabase.from("cards").delete().eq("id", editCard.id);
-    onDeleted(editCard.id);
+    try {
+      await deleteCard(editCard.id);
+      onDeleted(editCard.id);
+    } catch {
+      setError("Failed to delete card. Please try again.");
+      setLoading(false);
+    }
   }
 
   return (
@@ -143,6 +131,7 @@ export default function CreateCardModal({
               ref={titleRef}
               type="text"
               required
+              maxLength={200}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="Enter card name..."
@@ -160,6 +149,7 @@ export default function CreateCardModal({
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Add a description..."
               rows={4}
+              maxLength={2000}
               className="border border-[rgba(0,0,0,0.1)] rounded-[10px] px-3 py-2 text-base text-[#0a0a0a] placeholder:text-[#717182] focus:outline-none focus:border-[#0369a1] resize-none transition-colors"
             />
           </div>

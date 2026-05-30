@@ -31,15 +31,22 @@ export default function CreateBoardModal({ onClose, onCreated }: Props) {
     setError(null);
 
     const supabase = createClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      setError("Your session has expired. Please sign in again.");
+      setLoading(false);
+      return;
+    }
+
     const { data, error } = await supabase
       .from("boards")
-      .insert({ name: name.trim(), user_id: user!.id })
+      .insert({ name: name.trim(), user_id: user.id })
       .select("id, name, created_at")
       .single();
 
     if (error) {
-      setError(error.message);
+      setError("Failed to create board. Please try again.");
       setLoading(false);
     } else {
       onCreated(data);
