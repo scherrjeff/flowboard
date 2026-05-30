@@ -1,5 +1,8 @@
 "use client";
 
+import { useSortable } from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+
 type Card = {
   id: string;
   title: string;
@@ -13,24 +16,41 @@ type Card = {
 type Props = {
   card: Card;
   onEdit: (card: Card) => void;
-  dragHandleProps?: React.HTMLAttributes<HTMLDivElement>;
   isDragging?: boolean;
 };
 
-export default function TaskCard({ card, onEdit, dragHandleProps, isDragging }: Props) {
+export default function TaskCard({ card, onEdit, isDragging }: Props) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging: isSortableDragging,
+  } = useSortable({ id: card.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isSortableDragging ? 0.4 : 1,
+  };
+
   return (
     <div
-      {...dragHandleProps}
-      onClick={() => onEdit(card)}
-      className={`bg-white border border-[rgba(0,0,0,0.1)] rounded-[10px] px-[13px] pt-[13px] pb-[13px] cursor-pointer hover:shadow-sm transition-shadow ${
-        isDragging ? "opacity-50 shadow-md" : ""
+      ref={setNodeRef}
+      style={style}
+      {...attributes}
+      {...listeners}
+      onClick={() => !isSortableDragging && onEdit(card)}
+      className={`bg-white border border-[rgba(0,0,0,0.1)] rounded-[10px] px-[13px] pt-[13px] pb-[13px] cursor-grab active:cursor-grabbing hover:shadow-sm transition-shadow touch-none ${
+        isDragging ? "shadow-md" : ""
       }`}
     >
       <p className="text-sm text-[#0a0a0a] leading-5 tracking-[-0.15px]">
         {card.title}
       </p>
       {(card.priority || card.due_date) && (
-        <div className="flex items-center gap-2 mt-2">
+        <div className="flex items-center gap-2 mt-2 pointer-events-none">
           {card.priority && (
             <span
               className={`text-[10px] font-medium px-1.5 py-0.5 rounded uppercase tracking-wide ${
