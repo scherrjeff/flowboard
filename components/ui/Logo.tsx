@@ -1,9 +1,15 @@
-export default function Logo({ className = "" }: { className?: string }) {
+export default function Logo({
+  className = "",
+  color = "#0369a1",
+}: {
+  className?: string;
+  color?: string;
+}) {
   return (
     <div
-      className={`bg-[#0369a1] flex items-center justify-center rounded-[10px] ${className}`}
+      className={`flex items-center justify-center rounded-[10px] ${className}`}
+      style={{ backgroundColor: color }}
     >
-      {/* Kanban grid icon */}
       <svg
         width="20"
         height="20"

@@ -60,7 +60,7 @@ export default function LoginForm() {
     <div className="min-h-screen bg-[#f3f4f6] flex flex-col items-center justify-center px-4">
       {/* Logo + heading */}
       <div className="flex flex-col items-center gap-3 mb-6">
-        <Logo className="size-12" />
+        <Logo className="size-12" color="#00b800" />
         <h1 className="text-2xl font-semibold text-[#0a0a0a] tracking-tight">FlowBoard</h1>
         <p className="text-sm text-[#717182]">Sign in to manage your boards</p>
       </div>
@@ -145,7 +145,7 @@ export default function LoginForm() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-[#0369a1] hover:bg-[#0284c7] disabled:opacity-60 text-white font-medium text-base py-2.5 rounded-[10px] transition-colors mt-2"
+            className="bg-[#00b800] hover:bg-[#00a000] disabled:opacity-60 text-white font-medium text-base py-2.5 rounded-[10px] transition-colors mt-2"
           >
             {loading
               ? "..."

@@ -27,7 +27,7 @@ export default function BoardsGrid({ initialBoards }: { initialBoards: Board[] }
         </h1>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-[#0369a1] hover:bg-[#0284c7] text-white font-medium text-base px-4 h-[44px] rounded-[10px] flex items-center gap-2 transition-colors"
+          className="bg-[#00b800] hover:bg-[#00a000] text-white font-medium text-base px-4 h-[44px] rounded-[10px] flex items-center gap-2 transition-colors"
         >
           <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
             <path d="M9 3v12M3 9h12" stroke="white" strokeWidth="2" strokeLinecap="round" />
