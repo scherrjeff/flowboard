@@ -31,9 +31,10 @@ export default function CreateBoardModal({ onClose, onCreated }: Props) {
     setError(null);
 
     const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
     const { data, error } = await supabase
       .from("boards")
-      .insert({ name: name.trim() })
+      .insert({ name: name.trim(), user_id: user!.id })
       .select("id, name, created_at")
       .single();
 
