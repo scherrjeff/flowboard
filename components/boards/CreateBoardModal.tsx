@@ -91,7 +91,7 @@ export default function CreateBoardModal({ onClose, onCreated }: Props) {
             <button
               type="submit"
               disabled={loading || !name.trim()}
-              className="bg-[#0369a1] hover:bg-[#0284c7] disabled:opacity-50 text-white font-medium text-base h-[44px] px-4 rounded-[10px] transition-colors"
+              className="bg-[#00b800] hover:bg-[#00a000] disabled:opacity-50 text-white font-medium text-base h-[44px] px-4 rounded-[10px] transition-colors"
             >
               {loading ? "Creating…" : "Create"}
             </button>

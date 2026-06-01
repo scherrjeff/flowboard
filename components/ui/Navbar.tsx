@@ -15,7 +15,7 @@ export default function Navbar({ userInitial = "U", boardName, columnCount }: Na
       <div className="flex items-center justify-between h-[65px] px-6">
         <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2">
-            <Logo className="size-8" />
+            <Logo className="size-8" color="#00b800" />
             <span className="text-base text-[#0a0a0a]">FlowBoard</span>
           </Link>
           <Link href="/" className="text-base text-[#0a0a0a] hover:text-[#0369a1] transition-colors">
